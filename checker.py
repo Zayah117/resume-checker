@@ -22,8 +22,35 @@ def json_object(var, text):
     data = json.loads(text)
     return data
 
+def check(value, my_object, object_name):
+    errors = []
+
+    if type(value) is str:
+        if value in my_object:
+            if not (type(my_object[value]) is str or type(my_object[value]) is unicode):
+                errors.append("'%s' is not %s" % (str(value), 'str'))
+        else:
+            errors.append("'%s' not in %s" % (str(value), str(object_name)))
+
+    return errors
+
+def append_errors(results, error_list):
+    for i in range(len(results)):
+        error_list.append(results[i])
+    return error_list
+
 def check_bio(bio):
-    print "checking"
+    errors = []
+
+    # name
+    results = check("name", bio, "bio")
+    errors = append_errors(results, errors)
+
+    if len(errors) > 0:
+        for i in range(len(errors)):
+            print errors[i]
+    else:
+        print "No errors in bio"
 
 def check_work(work):
     print "checking"
@@ -36,14 +63,20 @@ def check_education(education):
 
 def main():
     text = get_text()
+    bio_data = None
+    work_data = None
+    project_data = None
+    education_data = None
     
     # Bio
     print "\n\n***BIO***"
     try:
         bio_data = json_object(VARS[0], text)
-        check_bio(bio_data)
     except:
         print "Could not get bio_data"
+
+    if bio_data:
+        check_bio(bio_data)
 
     # Work
     print "\n\n***WORK***"
