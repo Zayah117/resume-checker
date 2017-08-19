@@ -28,9 +28,17 @@ def check(value, my_object, object_name, types):
     if type(value) is str:
         if value in my_object:
             if not (type(my_object[value]) in types):
-                errors.append("'%s' is not %s" % (str(value), 'str'))
+                errors.append("'%s' is not %s" % (str(value), str(types)))
         else:
             errors.append("'%s' not in %s" % (str(value), str(object_name)))
+
+    return errors
+
+def check_value(variable, types, object_name):
+    errors = []
+
+    if not (type(variable) in types):
+        errors.append("'%s' in %s is not %s" % (str(variable), str(object_name), str(types)))
 
     return errors
 
@@ -49,6 +57,38 @@ def check_bio(bio):
     # role
     results = check("role", bio, "bio", [str, unicode])
     errors = append_errors(results, errors)
+
+    # contact info
+    results = check("contacts", bio, "bio", [dict])
+    errors = append_errors(results, errors)
+    if len(results) == 0:
+        # mobile
+        results = check("mobile", bio["contacts"], "bio['contacts']", [str, unicode])
+        errors = append_errors(results, errors)
+
+        # email
+        results = check("email", bio["contacts"], "bio['contacts']", [str, unicode])
+        errors = append_errors(results, errors)
+
+        # github
+        results = check("github", bio["contacts"], "bio['contacts']", [str, unicode])
+        errors = append_errors(results, errors)
+
+        # location
+        results = check("location", bio["contacts"], "bio['contacts']", [str, unicode])
+        errors = append_errors(results, errors)
+
+    # welcome message
+    results = check("welcomeMessage", bio, "bio", [str, unicode])
+    errors = append_errors(results, errors)
+
+    # skills
+    results = check("skills", bio, "bio", [list])
+    errors = append_errors(results, errors)
+    if len(results) == 0:
+        for i in range(len(bio["skills"])):
+            results = check_value(bio["skills"][i], [str, unicode], "bio['skills']")
+            errors = append_errors(results, errors)
 
     # print errors
     if len(errors) > 0:
