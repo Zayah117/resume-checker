@@ -150,6 +150,36 @@ def check_work(work):
 def check_projects(projects):
     errors = []
 
+    # projects
+    results = check("projects", projects, "projects", [list])
+    errors = append_errors(results, errors)
+    # check that each 'project' is an object
+    if no_errors(results):
+        for i in range(len(projects["projects"])):
+            results = check_value(projects["projects"][i], [dict], "projects['projects']")
+            errors = append_errors(results, errors)
+            # check each item in projects["projects"][i]
+            if no_errors(results):
+                # title
+                results = check("title", projects["projects"][i], "projects['projects'][" + str(i) + "]", [str, unicode])
+                errors = append_errors(results, errors)
+
+                # dates
+                results = check("dates", projects["projects"][i], "projects['projects'][" + str(i) + "]", [str, unicode])
+                errors = append_errors(results, errors)
+
+                # description
+                results = check("description", projects["projects"][i], "projects['projects'][" + str(i) + "]", [str, unicode])
+                errors = append_errors(results, errors)
+
+                # images
+                results = check("images", projects["projects"][i], "projects['projects'][" + str(i) + "]", [list])
+                errors = append_errors(results, errors)
+                # check that each image is a string url
+                for j in range(len(projects["projects"][i]["images"])):
+                    results = check_value(projects["projects"][i]["images"][j], [str, unicode], "projects['projects'][" + str(i) + "]['images']")
+                    errors = append_errors(results, errors)
+
     # print errors
     if len(errors) > 0:
         for i in range(len(errors)):
