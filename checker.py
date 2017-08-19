@@ -22,12 +22,12 @@ def json_object(var, text):
     data = json.loads(text)
     return data
 
-def check(value, my_object, object_name):
+def check(value, my_object, object_name, types):
     errors = []
 
     if type(value) is str:
         if value in my_object:
-            if not (type(my_object[value]) is str or type(my_object[value]) is unicode):
+            if not (type(my_object[value]) in types):
                 errors.append("'%s' is not %s" % (str(value), 'str'))
         else:
             errors.append("'%s' not in %s" % (str(value), str(object_name)))
@@ -43,14 +43,19 @@ def check_bio(bio):
     errors = []
 
     # name
-    results = check("name", bio, "bio")
+    results = check("name", bio, "bio", [str, unicode])
     errors = append_errors(results, errors)
 
+    # role
+    results = check("role", bio, "bio", [str, unicode])
+    errors = append_errors(results, errors)
+
+    # print errors
     if len(errors) > 0:
         for i in range(len(errors)):
             print errors[i]
     else:
-        print "No errors in bio"
+        print "Test passed"
 
 def check_work(work):
     print "checking"
