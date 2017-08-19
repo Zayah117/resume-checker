@@ -176,9 +176,10 @@ def check_projects(projects):
                 results = check("images", projects["projects"][i], "projects['projects'][" + str(i) + "]", [list])
                 errors = append_errors(results, errors)
                 # check that each image is a string url
-                for j in range(len(projects["projects"][i]["images"])):
-                    results = check_value(projects["projects"][i]["images"][j], [str, unicode], "projects['projects'][" + str(i) + "]['images']")
-                    errors = append_errors(results, errors)
+                if no_errors(results):
+                    for j in range(len(projects["projects"][i]["images"])):
+                        results = check_value(projects["projects"][i]["images"][j], [str, unicode], "projects['projects'][" + str(i) + "]['images']")
+                        errors = append_errors(results, errors)
 
     # print errors
     if len(errors) > 0:
@@ -189,6 +190,71 @@ def check_projects(projects):
 
 def check_education(education):
     errors = []
+
+    # schools
+    results = check("schools", education, "education", [list])
+    errors = append_errors(results, errors)
+    # check that each 'school' is an object
+    if no_errors(results):
+        for i in range(len(education["schools"])):
+            results = check_value(education["schools"][i], [dict], "education['schools']")
+            errors = append_errors(results, errors)
+            # check each item in education["schools"][i]
+            if no_errors(results):
+                # name
+                results = check("name", education["schools"][i], "education['schools'][" + str(i) + "]", [str, unicode])
+                errors = append_errors(results, errors)
+
+                # location
+                results = check("location", education["schools"][i], "education['schools'][" + str(i) + "]", [str, unicode])
+                errors = append_errors(results, errors)
+
+                # degree
+                results = check("degree", education["schools"][i], "education['schools'][" + str(i) + "]", [str, unicode])
+                errors = append_errors(results, errors)
+
+                # majors
+                results = check("majors", education["schools"][i], "education['schools'][" + str(i) + "]", [list])
+                errors = append_errors(results, errors)
+                # check that each major is a string
+                if no_errors(results):
+                    for j in range(len(education["schools"][i]["majors"])):
+                        results = check_value(education["schools"][i]["majors"][j], [str, unicode], "education['schools'][" + str(i) + "]['majors']")
+                        errors = append_errors(results, errors)                        
+
+                # dates
+                results = check("dates", education["schools"][i], "education['schools'][" + str(i) + "]", [str, unicode])
+                errors = append_errors(results, errors)
+
+                # url
+                results = check("url", education["schools"][i], "education['schools'][" + str(i) + "]", [str, unicode])
+                errors = append_errors(results, errors)
+
+    # online courses
+    results = check("onlineCourses", education, "education", [list])
+    errors = append_errors(results, errors)
+    # check that each 'onlineCourses' is an object
+    if no_errors(results):
+        for i in range(len(education["onlineCourses"])):
+            results = check_value(education["onlineCourses"][i], [dict], "education['onlineCourses']")
+            errors = append_errors(results, errors)
+            # check each item in education["onlineCourses"][i]
+            if no_errors(results):
+                # title
+                results = check("title", education["onlineCourses"][i], "education['onlineCourses'][" + str(i) + "]", [str, unicode])
+                errors = append_errors(results, errors)
+
+                # school
+                results = check("school", education["onlineCourses"][i], "education['onlineCourses'][" + str(i) + "]", [str, unicode])
+                errors = append_errors(results, errors)
+
+                # dates
+                results = check("dates", education["onlineCourses"][i], "education['onlineCourses'][" + str(i) + "]", [str, unicode])
+                errors = append_errors(results, errors)
+
+                # url
+                results = check("url", education["onlineCourses"][i], "education['onlineCourses'][" + str(i) + "]", [str, unicode])
+                errors = append_errors(results, errors)
 
     # print errors
     if len(errors) > 0:
