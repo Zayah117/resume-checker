@@ -3,7 +3,7 @@ import re
 import json
 from pprint import pprint
 
-VARS = ["var bio = ", "var work = ", "var projects = ", "var education = "]
+VARS = ["var bio =", "var work =", "var projects =", "var education ="]
 
 def get_text():
     my_file = open(sys.argv[1], "r")
