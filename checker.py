@@ -47,6 +47,12 @@ def append_errors(results, error_list):
         error_list.append(results[i])
     return error_list
 
+def no_errors(results):
+    if len(results) == 0:
+        return True
+    else:
+        return False
+
 def check_bio(bio):
     errors = []
 
@@ -61,7 +67,7 @@ def check_bio(bio):
     # contact info
     results = check("contacts", bio, "bio", [dict])
     errors = append_errors(results, errors)
-    if len(results) == 0:
+    if no_errors(results):
         # mobile
         results = check("mobile", bio["contacts"], "bio['contacts']", [str, unicode])
         errors = append_errors(results, errors)
@@ -85,10 +91,14 @@ def check_bio(bio):
     # skills
     results = check("skills", bio, "bio", [list])
     errors = append_errors(results, errors)
-    if len(results) == 0:
+    if no_errors(results):
         for i in range(len(bio["skills"])):
             results = check_value(bio["skills"][i], [str, unicode], "bio['skills']")
             errors = append_errors(results, errors)
+
+    # bio pic
+    results = check("biopic", bio, "bio", [str, unicode])
+    errors = append_errors(results, errors)    
 
     # print errors
     if len(errors) > 0:
@@ -98,13 +108,64 @@ def check_bio(bio):
         print "Test passed"
 
 def check_work(work):
-    print "checking"
+    errors = []
+
+    # jobs
+    results = check("jobs", work, "work", [list])
+    errors = append_errors(results, errors)
+    # check that each 'job' is an object
+    if no_errors(results):
+        for i in range(len(work["jobs"])):
+            results = check_value(work["jobs"][i], [dict], "work['jobs']")
+            errors = append_errors(results, errors)
+            # check each item in work["jobs"][i]
+            if no_errors(results):
+                # employer
+                results = check("employer", work["jobs"][i], "work['jobs'][" + str(i) + "]", [str, unicode])
+                errors = append_errors(results, errors)
+
+                # title
+                results = check("title", work["jobs"][i], "work['jobs'][" + str(i) + "]", [str, unicode])
+                errors = append_errors(results, errors)
+
+                # location
+                results = check("location", work["jobs"][i], "work['jobs'][" + str(i) + "]", [str, unicode])
+                errors = append_errors(results, errors)
+
+                # dates
+                results = check("dates", work["jobs"][i], "work['jobs'][" + str(i) + "]", [str, unicode])
+                errors = append_errors(results, errors)
+
+                # description
+                results = check("description", work["jobs"][i], "work['jobs'][" + str(i) + "]", [str, unicode])
+                errors = append_errors(results, errors)
+
+    # print errors
+    if len(errors) > 0:
+        for i in range(len(errors)):
+            print errors[i]
+    else:
+        print "Test passed"
 
 def check_projects(projects):
-    print "checking"
+    errors = []
+
+    # print errors
+    if len(errors) > 0:
+        for i in range(len(errors)):
+            print errors[i]
+    else:
+        print "Test passed"
 
 def check_education(education):
-    print "checking"
+    errors = []
+
+    # print errors
+    if len(errors) > 0:
+        for i in range(len(errors)):
+            print errors[i]
+    else:
+        print "Test passed"
 
 def main():
     text = get_text()
@@ -127,25 +188,31 @@ def main():
     print "\n\n***WORK***"
     try:
         work_data = json_object(VARS[1], text)
-        check_work(work_data)
     except:
         print "Could not get work_data"
+
+    if work_data:
+        check_work(work_data)
 
     # Projects
     print "\n\n***PROJECTS***"
     try:
         project_data = json_object(VARS[2], text)
-        check_projects(project_data)
     except:
         print "Could not get project_data"
+
+    if project_data:
+        check_projects(project_data)
 
     # Education
     print "\n\n***EDUCATION***"
     try:
         education_data = json_object(VARS[3], text)
-        check_education(education_data)
     except:
         print "Could not get education_data"
+
+    if education_data:
+        check_education(education_data)
 
 
 
