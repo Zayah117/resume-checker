@@ -274,8 +274,9 @@ def main():
     print "\n\n***BIO***"
     try:
         bio_data = json_object(VARS[0], text)
-    except:
-        print "Could not get bio_data"
+    except Exception as e:
+        print "Could not get bio_data\n"
+        print e
 
     if bio_data:
         check_bio(bio_data)
@@ -284,8 +285,9 @@ def main():
     print "\n\n***WORK***"
     try:
         work_data = json_object(VARS[1], text)
-    except:
-        print "Could not get work_data"
+    except Exception as e:
+        print "Could not get work_data\n"
+        print e
 
     if work_data:
         check_work(work_data)
@@ -294,8 +296,9 @@ def main():
     print "\n\n***PROJECTS***"
     try:
         project_data = json_object(VARS[2], text)
-    except:
-        print "Could not get project_data"
+    except Exception as e:
+        print "Could not get project_data\n"
+        print e
 
     if project_data:
         check_projects(project_data)
@@ -304,8 +307,9 @@ def main():
     print "\n\n***EDUCATION***"
     try:
         education_data = json_object(VARS[3], text)
-    except:
-        print "Could not get education_data"
+    except Exception as e:
+        print "Could not get education_data\n"
+        print e
 
     if education_data:
         check_education(education_data)
